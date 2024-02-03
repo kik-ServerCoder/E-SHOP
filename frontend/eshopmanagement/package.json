@@ -1,0 +1,16 @@
+{
+  "name": "eshopmanagement",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 7000",
+    "build": "next build",
+    "start": "next start --port 7000",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "14.1.0"
+  }
+}
