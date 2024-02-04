@@ -7,5 +7,29 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
+
+model Product {
+  prod_ID      Int      @id @default(autoincrement())
+  prod_name         String
+  prod_price        String
+  prod_sku          String
+  prod_sellprice    String?
+  prod_buyprice     String?
+  prod_totalSP      String?
+  prod_totalBP      String?
+   accountId    Int?
+  accountant   Accountant? @relation(fields: [accountId], references: [acct_ID])
+  
+}
+
+model Accountant {
+  acct_ID      Int      @id @default(autoincrement())
+  name         String
+  email        String
+  pass         String
+  username     String    @unique
+  products     Product[]
+}
+
