@@ -31,5 +31,14 @@ model Accountant {
   pass         String
   username     String    @unique
   products     Product[]
+  passwordResetToken passwordResetToken[]
+}
+
+model passwordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  accountantId   Int               
+  accountant   Accountant   @relation(fields: [accountantId], references: [acct_ID])
 }
 
