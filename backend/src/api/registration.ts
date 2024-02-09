@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { verifyToken } from './verification';
-
+import { verifyToken } from '../middleware/verification';
+import {checkBlacklist} from '../middleware/blocklist';
+ 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -10,7 +11,6 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
- //accountant api
 
  router.post('/register', async (req: Request, res: Response) => {
   try {
@@ -42,20 +42,24 @@ const router = express.Router();
 
 
 
+
+
+
+
   router.post('/login', async (req: Request, res: Response) => {
     try {
       const { username, pass } = req.body;
   
-      const user = await prisma.accountant.findUnique({ where: { username } });
+      const accountant = await prisma.accountant.findUnique({ where: { username } });
   
-      if (!user || !(await bcrypt.compare(pass, user.pass))) {
+      if (!accountant || !(await bcrypt.compare(pass, accountant.pass))) {
         return res.status(401).json({ message: 'error in username/password' });
       }
   
-      const token = jwt.sign({ id: user.acct_ID, username: user.username }, process.env.JWT_SECRET!, {
+      const token = jwt.sign({ acct_ID: accountant.acct_ID, username: accountant.username }, process.env.JWT_SECRET!, {
         expiresIn: '1h',
       });
-      res.status(201).json({ message: 'Welcome Sir :', identity: user.username});
+      res.status(201).json({ message: 'Welcome Sir '+ accountant.name, identity: token});
       
     } catch (error) {
       console.error(error);
@@ -63,28 +67,51 @@ const router = express.Router();
     }
   });
 
+
+
+
+
+
+ 
+ 
+ 
+  export const invalidatedTokens = new Set<string>();
   
+  router.post('/logout',  checkBlacklist,verifyToken, (req, res) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (token === undefined) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+  
+    invalidatedTokens.add(token);
+  
+    res.status(200).send('Logged out successfully');
+  });
+
+
+
 
 
   router.post('/forgot-password', async (req: Request, res: Response) => {
     const { username } = req.body;
   
     try {
-      const user = await prisma.accountant.findUnique({
+      const accountant = await prisma.accountant.findUnique({
         where: { username },
       });
   
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
+      if (!accountant) {
+        return res.status(404).json({ message: 'accountant not found.' });
       }
-      const resetToken = jwt.sign({ userId: user.acct_ID }, process.env.JWT_SECRET!, {
+      const resetToken = jwt.sign({ userId: accountant.acct_ID }, process.env.JWT_SECRET!, {
         expiresIn: '1h',
       });
       await prisma.passwordResetToken.create({
         data: {
           token: resetToken,
           expiresAt: new Date(Date.now() + 3600000),
-          accountantId : user.acct_ID,
+          accountantId : accountant.acct_ID,
         },
       });
       res.json({ message: 'Password reset initiated. here is your token to reset password.', resetToken });
@@ -93,6 +120,10 @@ const router = express.Router();
       res.status(500).json({ message: 'Internal Server Error.' });
     }
   });
+
+
+
+
 
 
   router.post('/reset-password/:token', async (req: Request, res: Response) => {
@@ -127,28 +158,9 @@ const router = express.Router();
       res.status(500).json({ message: 'Internal Server Error.' });
     }
   });
-router.get('/getallaccountantlists',verifyToken, async (req, res) => {
-    try {
-      const products = await prisma.accountant.findMany();
-      res.json(products);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-  
 
 
-  //product api
-router.get('/getallproductlists', async (req, res) => {
-    try {
-      const products = await prisma.product.findMany();
-      res.json(products);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+
 
 
   export default router;

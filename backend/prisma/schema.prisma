@@ -19,9 +19,9 @@ model Product {
   prod_buyprice     String?
   prod_totalSP      String?
   prod_totalBP      String?
-   accountId    Int?
-  accountant   Accountant? @relation(fields: [accountId], references: [acct_ID])
-  
+  prod_totalPrice   String?
+  accountantId    Int?
+  accountant   Accountant? @relation(fields: [accountantId], references: [acct_ID])
 }
 
 model Accountant {
