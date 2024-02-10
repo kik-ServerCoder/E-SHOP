@@ -4,6 +4,7 @@ import {checkBlacklist} from '../middleware/blocklist'
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { CustomRequest } from '../custom';
+import { invalidatedTokens } from './registration';
 
 
 const prisma = new PrismaClient();
@@ -44,14 +45,12 @@ router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, 
 router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     const accountantidnumber: number | undefined = req.userId;
-    const { email, name } = req.body;
+    const { email, name,username } = req.body;
     console.log(accountantidnumber);
 
-    if (!email || !name ) {
-      return res.status(400).json({ errors: ['Email, name, and password are required fields'] });
+    if (!email || !name || !username ) {
+      return res.status(400).json({ errors: ['Email, name, username and password are required fields'] });
     }
-    
-
     const isAccountantOwner = await prisma.accountant.findFirst({
       where: {
         acct_ID: accountantidnumber,
@@ -67,7 +66,8 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
       },
       data: {
         email,
-        name
+        name,
+        username
       },
     });
 
@@ -115,7 +115,63 @@ router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: Cust
 });
 
    
+router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantidnumber: number | undefined = req.userId;
+    const { currentPassword, newPassword } = req.body;
 
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ errors: ['Current password and new password are required fields'] });
+    }
+
+   
+    const AccountantOwner = await prisma.accountant.findUnique({
+      where: {
+        acct_ID: accountantidnumber,
+      },
+    });
+
+    if (!AccountantOwner) {
+      return res.status(404).json({ error: 'Accountant not found' });
+    }
+
+    
+    const passcheck = await bcrypt.compare(currentPassword, AccountantOwner.pass);
+
+    if (!passcheck) {
+      return res.status(401).json({ error: ' current password did not matched with previous pass' });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    
+    const updatedAccountant = await prisma.accountant.update({
+      where: {
+        acct_ID: accountantidnumber,
+      },
+      data: {
+        pass: hashedNewPassword,
+      },
+    }
+    
+    )
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+
+    if (token === undefined) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+  
+    invalidatedTokens.add(token);;
+
+    res.status(201).json({
+      message: 'Password changed successfully for Accountant with Id: ' + updatedAccountant.acct_ID,
+      identity: updatedAccountant.username,
+    });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 
