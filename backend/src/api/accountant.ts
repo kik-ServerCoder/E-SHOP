@@ -46,7 +46,7 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
   try {
     const accountantidnumber: number | undefined = req.userId;
     const { email, name,username } = req.body;
-    console.log(accountantidnumber);
+    
 
     if (!email || !name || !username ) {
       return res.status(400).json({ errors: ['Email, name, username and password are required fields'] });

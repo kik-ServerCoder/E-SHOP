@@ -19,10 +19,10 @@ const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
       acct_ID: decoded.acct_ID as string,
       
     };
-    console.log('Decoded JWT:', decoded);
+    
     req.decodedUser = decodedAccountant; 
     req.userId = parseInt(decodedAccountant.acct_ID, 10);
-    
+
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Access Denied! Accountant must login' });
