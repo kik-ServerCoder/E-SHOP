@@ -51,9 +51,13 @@ const router = express.Router();
       const { username, pass } = req.body;
   
       const accountant = await prisma.accountant.findUnique({ where: { username } });
+      
   
+      if (!accountant ) {
+        return res.status(401).json({ message: 'error in username' });
+      }
       if (!accountant || !(await bcrypt.compare(pass, accountant.pass))) {
-        return res.status(401).json({ message: 'error in username/password' });
+        return res.status(401).json({ message: 'error in password' });
       }
   
       const token = jwt.sign({ acct_ID: accountant.acct_ID, username: accountant.username }, process.env.JWT_SECRET!, {

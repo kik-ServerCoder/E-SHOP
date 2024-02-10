@@ -1,7 +1,7 @@
 
 import { Response, NextFunction } from 'express';
 import { CustomRequest } from '../custom'; 
-import { DecodedAccountant } from '../types'; 
+import {  DecodedAccountantid } from '../types'; 
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -15,16 +15,17 @@ const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     
    
-    const decodedAccountant: DecodedAccountant = {
+    const decodedAccountant: DecodedAccountantid = {
       acct_ID: decoded.acct_ID as string,
       
     };
     console.log('Decoded JWT:', decoded);
     req.decodedUser = decodedAccountant; 
-
+    req.userId = parseInt(decodedAccountant.acct_ID, 10);
+    
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Access Denied from verifications' });
+    return res.status(401).json({ message: 'Access Denied! Accountant must login' });
   }
 };
 

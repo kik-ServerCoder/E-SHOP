@@ -1,8 +1,10 @@
-// Assumi
-interface DecodedAccountant {
+interface DecodedAccountantid {
     acct_ID: string;
     
   }
   
-  export { DecodedAccountant };
+  export { DecodedAccountantid };
+
+
+
   
