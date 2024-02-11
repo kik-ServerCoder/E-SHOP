@@ -54,7 +54,7 @@ const router = express.Router();
       
   
       if (!accountant ) {
-        return res.status(401).json({ message: 'error in username' });
+        return res.status(401).json({ message: 'user not found' });
       }
       if (!accountant || !(await bcrypt.compare(pass, accountant.pass))) {
         return res.status(401).json({ message: 'error in password' });

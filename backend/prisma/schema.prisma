@@ -12,6 +12,7 @@ datasource db {
 
 model Product {
   prod_ID      Int      @id @default(autoincrement())
+  prod_code         String? @unique
   prod_name         String
   prod_price        String
   prod_sku          String
