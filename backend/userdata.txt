@@ -1,7 +1,1 @@
 accountant list: 
-{
-        "name": "Sehab Shareen",
-        "email": "unknown@example.com",
-        "pass": "123456",
-        "username": "sehaab"
-}eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcwNzM1NTA1OCwiZXhwIjoxNzA3MzU4NjU4fQ.U0xZom28q3x8wUWukGA3TsglCbkZVLhcCQFl3OaEaJc

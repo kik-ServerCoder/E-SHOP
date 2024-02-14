@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const Header = () => {
   return (
-    <header data-theme="nord" className="flex justify-between items-center p-4 bg-gray-800 text-white">
+    <header data-theme="nord" className=" shadow-md p-5 flex justify-between items-center ml-40 mr-40 bg-gray-800 text-white rounded-lg">
       
       <div className="flex items-center">
     
@@ -16,17 +16,17 @@ const Header = () => {
         <ul className="flex space-x-4">
           <li>
             <Link href="/">
-            <>Home</>
+            <b>Home</b>
             </Link>
           </li>
           <li>
             <Link href="/about">
-            <>About</>
+            <b>About</b>
             </Link>
           </li>
           <li>
             <Link href="/contact">
-            <>Contact</>
+            <b>Contact us</b>
             </Link>
           </li>
         </ul>
