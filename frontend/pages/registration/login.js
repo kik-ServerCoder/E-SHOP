@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import jwt_decode from 'jwt-decode';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Login = () => {
@@ -17,21 +19,29 @@ const Login = () => {
         pass,
       });
 
-      console.log(response.data);
-      
-    
-
       if (response.status === 201) {
-        
-        router.push("./dashboard/accountant/ac_dashboard");
-        
+        const { identity, message } = response.data;
+
+      
+        const decodedToken = jwt_decode(identity);
+
+     
+        const accountantName = decodedToken.username;
+
+   
+        localStorage.setItem('authToken', identity);
+        localStorage.setItem('accountantName', accountantName);
+
+        setError('');
+
+
+        router.push("/dashboard/accountant/ac_dashboard");
       } else {
-        setError("Login failed. Please check your credentials.")
+        setError(`Login failed: ${message}`);
         console.error("Login failed");
-        
       }
     } catch (error) {
-      setError(error)
+      setError(`Login failed: ${error.message}`);
       console.error('Login failed with error:', error);
     }
   };
@@ -65,13 +75,13 @@ const Login = () => {
           value={pass}
           onChange={(e) => setPassword(e.target.value)}
         />
+       
         {error && <div className="text-red-500 mb-4">{error}</div>}
-      
 
         <div className="text-right mb-4">
-          <a href="/forgot-password" className="text-blue-500">
+          <Link href="/forgot-password" className="text-blue-500">
             Forgot Password?
-          </a>
+          </Link>
         </div>
 
         <button type="submit" className="bg-gray-800 text-white p-2 rounded cursor-pointer">
@@ -81,9 +91,9 @@ const Login = () => {
 
       <div className="mt-4 text-center">
         Don't have an account?{" "}
-        <a href="/signup" className="text-blue-500 font-bold">
+        <Link href="/registration/signup" className="text-blue-500 font-bold">
           Sign Up
-        </a>
+        </Link>
       </div>
     </div>
   );

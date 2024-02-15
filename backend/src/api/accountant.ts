@@ -12,6 +12,7 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 
+
 router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, res: Response) => {
   try {
     const {
@@ -38,8 +39,30 @@ router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, 
   }
 });
 
+router.get('/getaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantId: number | undefined = req.userId;
 
+    if (!accountantId) {
+      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    }
 
+    const accountant = await prisma.accountant.findUnique({
+      where: {
+        acct_ID: accountantId,
+      },
+    });
+
+    if (!accountant) {
+      return res.status(404).json({ error: 'Accountant not found' });
+    }
+
+    res.status(200).json(accountant);
+  } catch (error) {
+    console.error('Error getting Accountant by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
@@ -80,6 +103,7 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
