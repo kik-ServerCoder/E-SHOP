@@ -2,45 +2,46 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-
 const SignUp = () => {
+  const [error, setError] = useState(""); 
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
+    pass: '',
     username: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: value, [pass]:value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/register', formData);
+      const response = await axios.post('http://localhost:3000/reg/signup', formData);
 
-      if (response.status === 201) {
+      if (response.status === 400) {
         const data = response.data;
         console.log(data);
       } else {
-        console.error(response.data); 
+        setError(response.data)
+        console.error(response.data);
       }
     } catch (error) {
+      
       console.error('Error submitting form:', error);
     }
   };
 
   return (
     <>
-      
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-white shadow-md rounded-md p-8 max-w-md w-full">
-     
-        <h1 className="text-2xl font-semibold mb-6">Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+      <div className="flex items-center justify-center h-screen">
+        <div className="bg-white shadow-md rounded-md p-8 max-w-md w-full">
+          <h1 className="text-2xl font-semibold mb-6">Sign Up</h1>
+          <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
               Name:
@@ -50,6 +51,7 @@ const SignUp = () => {
               id="name"
               name="name"
               value={formData.name}
+              
               onChange={handleChange}
               className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500" />
           </div>
@@ -71,9 +73,10 @@ const SignUp = () => {
             </label>
             <input
               type="password"
-              id="password"
-              name="password"
-              value={formData.password}
+              id="pass"
+              name="pass"
+              value={formData.pass}
+            
               onChange={handleChange}
               className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500" />
           </div>
@@ -88,18 +91,16 @@ const SignUp = () => {
               value={formData.username}
               onChange={handleChange}
               className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500" />
-          </div>
+          </div> {error && <div className="text-red-500 mb-4">{error}</div>}
           <button
             type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+            className="bg-gray-800  items-center text-white py-2 px-4 ml-28 rounded-md hover:bg-black focus:outline-none focus:shadow-outline-blue"
           >
             Sign Up
           </button>
         </form>
+        </div>
       </div>
-    </div>
-    
-  
     </>
   );
 };

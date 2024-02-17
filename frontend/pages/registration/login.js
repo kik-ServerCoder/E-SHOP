@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -19,14 +18,11 @@ const Login = () => {
         pass,
       });
 
-      if (response.status === 201) {
-        const { identity, message } = response.data;
-
-      
-        const decodedToken = jwt_decode(identity);
-
-     
-        const accountantName = decodedToken.username;
+      if (response.status === 200) {
+        const { identity, message,userdata } = response.data;
+        console.log(identity);
+        
+        const accountantName = userdata.name;
 
    
         localStorage.setItem('authToken', identity);
@@ -35,13 +31,13 @@ const Login = () => {
         setError('');
 
 
-        router.push("/dashboard/accountant/ac_dashboard");
+       router.push("/dashboard/accountant/ac_dashboard");
       } else {
         setError(`Login failed: ${message}`);
         console.error("Login failed");
       }
     } catch (error) {
-      setError(`Login failed: ${error.message}`);
+      setError(`Login failed, Check username/password}`);
       console.error('Login failed with error:', error);
     }
   };
@@ -72,7 +68,8 @@ const Login = () => {
           name="password"
           placeholder="Enter your password"
           className="border p-2 rounded mb-4"
-          value={pass}
+          value={pass} 
+          autoComplete={"off"}
           onChange={(e) => setPassword(e.target.value)}
         />
        

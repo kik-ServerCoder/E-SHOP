@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 
- router.post('/register', async (req: Request, res: Response) => {
+ router.post('/signup', async (req: Request, res: Response) => {
   try {
     const { name, email, pass, username } = req.body;
 
@@ -50,7 +50,9 @@ const router = express.Router();
     try {
       const { username, pass } = req.body;
   
-      const accountant = await prisma.accountant.findUnique({ where: { username } });
+      const accountant = await prisma.accountant.findUnique({ where: { username }, select: {
+        acct_ID:true , username:true , pass: true, email:true, name:true 
+      } });
       
   
       if (!accountant ) {
@@ -62,8 +64,11 @@ const router = express.Router();
   
       const token = jwt.sign({ acct_ID: accountant.acct_ID, username: accountant.username }, process.env.JWT_SECRET!, {
         expiresIn: '1h',
-      });
-      res.status(201).json({ message: 'Welcome Sir '+ accountant.name, identity: token});
+      }); 
+
+      const user = {...accountant,pass:undefined};
+
+      res.status(200).json({ message: 'Welcome Sir '+ accountant.name, identity: token, userdata:user});
       
     } catch (error) {
       console.error(error);
