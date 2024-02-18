@@ -66,7 +66,7 @@ const router = express.Router();
         expiresIn: '1h',
       }); 
 
-      const user = {...accountant,pass:undefined};
+      const user = {...accountant, pass:undefined};
 
       res.status(200).json({ message: 'Welcome Sir '+ accountant.name, identity: token, userdata:user});
       

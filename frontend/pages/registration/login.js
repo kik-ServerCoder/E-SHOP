@@ -31,7 +31,7 @@ const Login = () => {
         setError('');
 
 
-       router.push("/dashboard/accountant/ac_dashboard");
+       router.push("/dashboard/ac_dashboard");
       } else {
         setError(`Login failed: ${message}`);
         console.error("Login failed");
