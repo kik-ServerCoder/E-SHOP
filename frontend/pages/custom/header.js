@@ -17,8 +17,10 @@ const Header = () => {
   return (
     <header data-theme="nord" className="shadow-md p-5 flex justify-between items-center ml-40 mr-40 bg-gray-800 text-white rounded-lg">
       <div className="flex items-center">
-        <img src="/logo/logo.png" alt="Company Logo" className="w-10 h-8 mr-2 bg-gray-800" />
-        <span className="text-xl font-bold">E-Shop.</span>
+          
+              <img src="/logo/logo.png" alt="Company Logo" className="w-10 h-8 mr-2 bg-gray-800" />
+           
+        <span className="text-xl font-bold"><a href='/'>E-Shop.</a></span>
       </div>
 
       <nav>
@@ -34,13 +36,13 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link href="/contact">
+            <Link href="/contactus">
               <b>Contact us</b>
             </Link>
           </li>
           <li>
             <div>
-{isLoggedIn?(<Link href="/dashboard/accountant/ac_dashboard">
+{isLoggedIn?(<Link href="/dashboard/ac_dashboard">
               <b>Dashboard</b>
             </Link>):( <span className="mr-2">
              

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const UserDisplay = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -23,7 +24,10 @@ const UserDisplay = () => {
       {loggedIn ? (
         <>
           <span className="mr-2">{accountantName}</span>
+          <Link href="/">
           <img src="/logo/userlogo.svg" alt="User Logo" className="w-8 h-8" />
+            </Link>
+         
         </>
       ) : (
         <span> N/A </span>
