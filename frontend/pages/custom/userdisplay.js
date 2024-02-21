@@ -6,10 +6,8 @@ const UserDisplay = () => {
   const [accountantName, setAccountantName] = useState('');
 
   useEffect(() => {
-    
     const token = localStorage.getItem('authToken');
     const storedAccountantName = localStorage.getItem('accountantName');
-
     if (token && storedAccountantName) {
       setLoggedIn(true);
       setAccountantName(storedAccountantName);

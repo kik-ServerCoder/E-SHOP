@@ -203,8 +203,8 @@ router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomReques
 
 router.get('/getallaccountantlists',verifyToken,checkBlacklist, async (req, res) => {
     try {
-      const products = await prisma.accountant.findMany();
-      res.json(products);
+      const accountants = await prisma.accountant.findMany();
+      res.json(accountants);
     } catch (error) {
       console.error('Error fetching products:', error);
       res.status(500).json({ error: 'Internal server error' });

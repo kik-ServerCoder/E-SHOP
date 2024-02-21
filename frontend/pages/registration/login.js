@@ -10,8 +10,7 @@ const Login = () => {
   const router = useRouter();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-
+    e.preventDefault(); 
     try {
       const response = await axios.post("http://localhost:3000/reg/login", {
         username,
