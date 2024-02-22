@@ -19,26 +19,33 @@ const ac_dashboard = () => {
           View Profile
         </div>
       </Link>
-      <Link href="./product/addbuyprice">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
-          Add Buy Price
-        </div>
-      </Link>
-      <Link href="./product/addsellprice">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
-          Add Sell Price
+      <Link href="./product/addproduct">
+        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-72 h-72 flex items-center justify-center hover:bg-gray-300">
+         Add Product
         </div>
       </Link>
       <Link href="./product/allproducts">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
+        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4  w-72 h-72 flex items-center justify-center hover:bg-gray-300">
           View All Products
         </div>
       </Link>
       <Link href="./product/updateproduct">
-        <div className="dashboard-link bg-gray-200 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
+        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4  w-72 h-72 flex items-center justify-center hover:bg-gray-300">
           Update Product
         </div>
       </Link>
+      <Link href="./product/addbuyprice">
+        <div className=" bg-green-100 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
+          Add Buy Price
+        </div>
+      </Link>
+      <Link href="./product/addsellprice">
+        <div className=" bg-red-100 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
+          Add Sell Price
+        </div>
+      </Link>
+      
+    
     </div>
   );
 };

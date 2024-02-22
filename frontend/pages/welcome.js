@@ -34,7 +34,7 @@ const Welcome = () => {
           Manage Your daily product buy and sell
         </h1>
      
-          <a href="/dashboard/accountant/ac_dashboard"><p className=""> Let's go</p ></a>
+          <a href="/dashboard/ac_dashboard"><p className=""> Let's go</p ></a>
   
       </>
     </>;

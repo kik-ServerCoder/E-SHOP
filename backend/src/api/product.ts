@@ -11,14 +11,15 @@ const router = express.Router();
 router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     const {
-      prod_ID,
+     
+      prod_code,
       prod_name,
       prod_price,
       prod_sku,
       prod_totalPrice,
     } = req.body;
 
-    if (!prod_name || !prod_price || !prod_sku) {
+    if ( !prod_code|| !prod_name || !prod_price || !prod_sku || !prod_price) {
       return res.status(400).json({ errors: ['Product name, product password, and product units are required fields'] });
     }
 
@@ -30,7 +31,8 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
 
     const newProduct = await prisma.product.create({
       data: {
-        prod_ID,
+        
+        prod_code,
         prod_name,
         prod_price,
         prod_sku,
@@ -51,7 +53,7 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
 
 router.put('/editproduct/:productId', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const { prod_name, prod_price, prod_sku, prod_sellprice, prod_buyprice, prod_totalSP, prod_totalBP, prod_totalPrice } = req.body;
+    const { prod_name,  prod_code, prod_price, prod_sku, prod_sellprice, prod_buyprice, prod_totalSP, prod_totalBP, prod_totalPrice } = req.body;
     const productId = parseInt(req.params.productId,10);
 
     if (!prod_name || !prod_price || !prod_sku) {
@@ -65,7 +67,7 @@ router.put('/editproduct/:productId', verifyToken, checkBlacklist, async (req: C
     }
 
     const existingProduct = await prisma.product.findUnique({
-      where: { prod_ID:productId },
+      where: { prod_ID: productId },
       include: { accountant: true }, 
     });
 
@@ -77,6 +79,7 @@ router.put('/editproduct/:productId', verifyToken, checkBlacklist, async (req: C
       where: { prod_ID: productId},
       data: {
         prod_name,
+        prod_code,
         prod_price,
         prod_sku,
         prod_sellprice,

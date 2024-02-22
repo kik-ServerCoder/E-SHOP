@@ -21,7 +21,8 @@ const UserDisplay = () => {
     <div className="flex items-center">
       {loggedIn ? (
         <>
-          <span className="mr-2">{accountantName}</span>
+        <Link href="/dashboard/accountant/viewaccountant"><span className="mr-2">{accountantName}</span></Link>
+          
           <Link href="/">
           <img src="/logo/userlogo.svg" alt="User Logo" className="w-8 h-8" />
             </Link>
