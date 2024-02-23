@@ -230,6 +230,37 @@ router.delete('/deleteproduct/:productId', verifyToken, checkBlacklist, async (r
     }
 });
 
+router.get('/getproduct/:id', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantId: number | undefined = req.userId;
+    const productID: number | undefined = parseInt(req.params.id);
+
+    if (!accountantId) {
+      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    }
+
+    if (isNaN(productID) || productID <= 0) {
+      return res.status(400).json({ error: 'Invalid product ID' });
+    }
+
+    const product = await prisma.product.findUnique({
+      where: {
+        prod_ID: productID,
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error('Error getting product by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 
 export default router;

@@ -41,11 +41,6 @@ const router = express.Router();
 
 
 
-
-
-
-
-
   router.post('/login', async (req: Request, res: Response) => {
     try {
       const { username, pass } = req.body;
@@ -77,12 +72,6 @@ const router = express.Router();
   });
 
 
-
-
-
-
- 
- 
  
   export const invalidatedTokens = new Set<string>();
   
