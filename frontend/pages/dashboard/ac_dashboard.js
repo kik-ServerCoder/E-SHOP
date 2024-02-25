@@ -34,12 +34,12 @@ const ac_dashboard = () => {
           Update Product
         </div>
       </Link>
-      <Link href="./product/addbuyprice">
+      <Link href="./product/buyPrice/addbuyprice">
         <div className=" bg-green-100 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
           Add Buy Price
         </div>
       </Link>
-      <Link href="./product/addsellprice">
+      <Link href="./product/sellprice/addsellprice">
         <div className=" bg-red-100 text-gray-800 font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-gray-300">
           Add Sell Price
         </div>

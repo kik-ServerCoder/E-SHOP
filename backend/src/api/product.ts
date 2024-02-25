@@ -176,7 +176,7 @@ router.patch('/editbuyprice/:productId', verifyToken, checkBlacklist, async (req
       },
     });
 
-    res.status(201).json({
+    res.status(200).json({
       message: 'Updated product Buy price. Product Id: ' + updatedProduct.prod_ID,
       identity: updatedProduct.prod_name,
     });
