@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from 'next/router';
+import Link from "next/link";
 
 const ViewProduct = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const ViewProduct = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:3000/product/getallproductlists/',{
+        const response = await axios.get('http://localhost:3000/product/getallproductlists/', {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -31,7 +32,7 @@ const ViewProduct = () => {
         } else {
           setProduct([response.data]); 
         }
-
+        
         setLoading(false);
       } catch (error) {
         console.error('Error fetching product list:', error);
@@ -46,7 +47,7 @@ const ViewProduct = () => {
   if (loading) {
     return <div className="text-center">Loading...</div>;
   }
-
+  
   if (error) {
     return (
       <div className="text-center text-red-500">
@@ -54,15 +55,19 @@ const ViewProduct = () => {
       </div>
     );
   }
+  
+  if (product.length === 0) {
+    return <div className="text-center">No products found.</div>;
+  }
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="mt-8 overflow-x-auto max-w-screen-xl ml-4 mr-2">
       <h1 className="text-3xl font-bold mb-4">Product Details</h1>
-      <table className="min-w-full bg-white border border-gray-300 rounded-md">
+      <table className="w-full bg-white border border-gray-300 rounded-md mx-auto">
         <thead>
           <tr className="bg-gray-200">
             {Object.keys(product[0]).map((key) => (
-              <th key={key} className="py-2 px-4 font-semibold text-left">{key}</th>
+              <th key={key} className="py-2 font-semibold text-left">{key}</th>
             ))}
           </tr>
         </thead>
@@ -76,6 +81,23 @@ const ViewProduct = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center items-center">
+        <Link href="./addproduct">
+          <div className="bg-green-400 text-white font-bold p-8 m-4 w-48 h-16 flex items-center justify-center hover:bg-green-300">
+            Add Product
+          </div>
+        </Link>
+        <Link href="./update/editproduct">
+          <div className="bg-orange-600 text-white font-bold p-8 m-4 w-48 h-16 flex items-center justify-center hover:bg-orange-400">
+            Update Product
+          </div>
+        </Link>
+        <Link href="./delete/deleteproduct">
+          <div className="bg-red-600 text-white font-bold p-8 m-4 w-48 h-16 flex items-center justify-center hover:bg-red-300">
+            Delete Product
+          </div>
+        </Link>
+      </div>
     </div>
   );
 };
