@@ -23,6 +23,7 @@ model Product {
   prod_totalPrice   String?
   accountantId    Int?
   accountant   Accountant? @relation(fields: [accountantId], references: [acct_ID])
+ 
 }
 
 model Accountant {

@@ -4,7 +4,7 @@ import Link from "next/link";
 const ac_dashboard = () => {
   return (
     <div className="flex flex-wrap justify-center ml-40 mr-40">
-      <Link href="./accountant/allaccountant">
+      {/* <Link href="./accountant/allaccountant">
         <div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48 flex items-center justify-center hover:bg-gray-400">
           All Accountant
         </div>
@@ -18,7 +18,7 @@ const ac_dashboard = () => {
         <div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48  flex items-center justify-center hover:bg-gray-400">
           View Profile
         </div>
-      </Link>
+      </Link> */}
       <Link href="./product/addproduct">
         <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-72 h-56 flex items-center justify-center hover:bg-gray-300">
          Add Product

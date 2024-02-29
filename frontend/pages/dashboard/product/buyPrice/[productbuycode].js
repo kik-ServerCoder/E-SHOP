@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
-const EditbuyProduct = () => {
+const EditsellProduct = () => {
   const router = useRouter();
-  const { productbuyId } = router.query;
+  const { productbuycode } = router.query;
 
   const [productbuyData, setProductbuyData] = useState({
     prod_name: '',
@@ -14,6 +14,8 @@ const EditbuyProduct = () => {
     prod_totalBP: '',
   });
 
+  const [unitsToAdd, setUnitsToAdd] = useState('');
+  const [AddedQuantity, setAddedQuantity] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const EditbuyProduct = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:3000/product/getproduct/${productbuyId}`, {
+        const response = await axios.get(`http://localhost:3000/product/getproductwithcode/${productbuycode}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
@@ -43,10 +45,10 @@ const EditbuyProduct = () => {
       }
     };
 
-    if (productbuyId) {
+    if (productbuycode) {
       fetchProductbuyData();
     }
-  }, [productbuyId, router]);
+  }, [productbuycode, router]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,51 +65,63 @@ const EditbuyProduct = () => {
 
   const calculateTotalPrice = (data) => {
     const price = parseFloat(data.prod_buyprice) || 0;
-    const quantity = parseInt(data.prod_sku) || 0;
-    const prod_totalBP = (price * quantity).toFixed();
-
- 
+    const originalQuantity = parseInt(productbuyData.prod_sku) || 0;
+    const unitsToAddValue = parseInt(unitsToAdd) || 0;
+  
+    const updatedQuantity = originalQuantity + unitsToAddValue;
+    const prod_totalBP = (price * updatedQuantity).toFixed();
+  
     setProductbuyData((prevData) => ({ ...prevData, prod_totalBP }));
+    setAddedQuantity(updatedQuantity);
   };
+  
 
-  const handlebuyProduct = async () => {
-    try {
-      const authToken = localStorage.getItem('authToken');
-      
-      if (!authToken) {
-        router.push("/");
-        return;
-      }
 
-      const response = await axios.patch(`http://localhost:3000/product/editbuyprice/${productbuyId}`, productbuyData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+const handlebuyProduct = async () => {
+  try {
+    const authToken = localStorage.getItem('authToken');
 
-      if (response.status === 200) {
-      router.push("/dashboard/product/allproducts")
-      } else {
-        setError(`Error updating product: ${response.statusText}`);
-      }
-    } catch (error) {
-      setError(`Error updating product: ${error.message}`);
+    if (!authToken) {
+      router.push("/");
+      return;
     }
-  };
+
+    const updatedQuantity = String(parseInt(productbuyData.prod_sku) + parseInt(unitsToAdd || 0));
+
+    const response = await axios.patch(`http://localhost:3000/product/editbuyprice/${productbuycode}`, {
+      ...productbuyData,
+      prod_sku: updatedQuantity,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      router.push("/dashboard/product/buyPrice/addbuyprice");
+    } else {
+      setError(`Error updating product: ${response.statusText}`);
+    }
+  } catch (error) {
+    setError(`Error updating product: ${error.message}`);
+  }
+};
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold mb-4">Add Buy Price</h2>
+        <h2 className="text-2xl font-bold mb-4">Edit Buy Price</h2>
         <form onSubmit={(e) => { e.preventDefault(); handlebuyProduct(); }}>
-        <div className="mb-4">
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Code:</label>
             <input
               type="text"
               name="prod_code"
               value={productbuyData.prod_code}
-              onChange={handleInputChange}
+              readOnly
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
@@ -117,32 +131,38 @@ const EditbuyProduct = () => {
               type="text"
               name="prod_name"
               value={productbuyData.prod_name}
-              onChange={handleInputChange}
+              readOnly
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
+          
           <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Current Quantity: {productbuyData.prod_sku}</label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Units to Add:</label>
+            <input
+              type="text"
+              name="unitsToAdd"
+              value={unitsToAdd}
+              onChange={(e) => setUnitsToAdd(e.target.value)}
+              className="mt-1 p-2 w-full border rounded-md"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Updated Quantity: {AddedQuantity}</label>
+          </div>
+<div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Product Buy Price:</label>
             <input
               type="text"
               name="prod_buyprice"
-              value={productbuyData.prod_buyprice}
+              value={productbuyData.prod_buyprice || ''}
               onChange={handleInputChange}
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Product Quantity:</label>
-            <input
-              type="text"
-              name="prod_sku"
-              value={productbuyData.prod_sku}
-              onChange={handleInputChange}
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
-
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Total Buy Price:</label>
             <input
@@ -156,12 +176,12 @@ const EditbuyProduct = () => {
 
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-600">
-    Add Buy Price
-  </button>
+            Update Buy Price
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default EditbuyProduct;
+export default EditsellProduct;

@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 
 const EditSellPrice = () => {
   const router = useRouter();
-  const [productsellId, setProductsellId] = useState(''); 
+  const [productsellcode, setProductsellcode] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
-    setProductsellId(e.target.value); 
+    setProductsellcode(e.target.value); 
     setError('');
   };
 
@@ -24,7 +24,7 @@ const EditSellPrice = () => {
         return;
       }
 
-      const response = await axios.get(`http://localhost:3000/product/getproduct/${productsellId}`, { 
+      const response = await axios.get(`http://localhost:3000/product/getproductwithcode/${productsellcode}`, { 
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
@@ -32,7 +32,7 @@ const EditSellPrice = () => {
       });
 
       if (response.data) {
-        router.push(`/dashboard/product/sellprice/${productsellId}`); 
+        router.push(`/dashboard/product/sellprice/${productsellcode}`); 
       } else {
         setError('Product not found');
       }
@@ -47,11 +47,11 @@ const EditSellPrice = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-semibold mb-4">Search with Product ID to Add Sell Price</h1>
+        <h1 className="text-2xl font-semibold mb-4">Search with Product Code to Add Sell Price</h1>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           <input
             type="text"
-            value={productsellId} 
+            value={productsellcode} 
             onChange={handleInputChange}
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />

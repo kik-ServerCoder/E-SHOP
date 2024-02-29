@@ -97,10 +97,10 @@ router.put('/editproduct/:productId', verifyToken, checkBlacklist, async (req: C
   }
 });
 
-router.patch('/editsellprice/:productId', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+router.patch('/editsellprice/:productcode', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     
-    const productId = parseInt(req.params.productId,10);
+    const productcode = req.params.productcode;
     const { prod_sku, prod_sellprice,prod_totalSP } = req.body;
     
 
@@ -114,7 +114,7 @@ router.patch('/editsellprice/:productId', verifyToken, checkBlacklist, async (re
     }
 
     const existingProduct = await prisma.product.findUnique({
-      where: { prod_ID:productId },
+      where: { prod_code:productcode },
       include: { accountant: true }, 
     });
 
@@ -122,7 +122,7 @@ router.patch('/editsellprice/:productId', verifyToken, checkBlacklist, async (re
       return res.status(404).json({ message: 'Product not found or unauthorized to edit' });
     }
     const updatedProduct = await prisma.product.update({
-      where: { prod_ID: productId},
+      where: { prod_code: productcode},
       data: {      
         prod_sku,
         prod_sellprice,    
@@ -131,7 +131,7 @@ router.patch('/editsellprice/:productId', verifyToken, checkBlacklist, async (re
     });
 
     res.status(201).json({
-      message: 'Updated product sell price. Product Id: ' + updatedProduct.prod_ID,
+      message: 'Updated product sell price. Product code: ' + updatedProduct.prod_code,
       identity: updatedProduct.prod_name,
     });
   } catch (error) {
@@ -143,10 +143,10 @@ router.patch('/editsellprice/:productId', verifyToken, checkBlacklist, async (re
 
 
 
-router.patch('/editbuyprice/:productId', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+router.patch('/editbuyprice/:productcode', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     
-    const productId = parseInt(req.params.productId,10);
+    const productcode = req.params.productcode;
     const { prod_sku, prod_buyprice,prod_totalBP } = req.body;
     
 
@@ -160,7 +160,7 @@ router.patch('/editbuyprice/:productId', verifyToken, checkBlacklist, async (req
     }
 
     const existingProduct = await prisma.product.findUnique({
-      where: { prod_ID:productId },
+      where: { prod_code:productcode },
       include: { accountant: true }, 
     });
 
@@ -168,7 +168,7 @@ router.patch('/editbuyprice/:productId', verifyToken, checkBlacklist, async (req
       return res.status(404).json({ message: 'Product not found or unauthorized to edit' });
     }
     const updatedProduct = await prisma.product.update({
-      where: { prod_ID: productId},
+      where: { prod_code: productcode},
       data: {      
         prod_sku,
         prod_buyprice,    
@@ -177,7 +177,7 @@ router.patch('/editbuyprice/:productId', verifyToken, checkBlacklist, async (req
     });
 
     res.status(200).json({
-      message: 'Updated product Buy price. Product Id: ' + updatedProduct.prod_ID,
+      message: 'Updated product Buy price. Product Code: ' + updatedProduct.prod_code,
       identity: updatedProduct.prod_name,
     });
   } catch (error) {
@@ -259,6 +259,36 @@ router.get('/getproduct/:id', verifyToken, checkBlacklist, async (req: CustomReq
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+router.get('/getproductwithcode/:code', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantId: number | undefined = req.userId;
+    const productcode: string | undefined = req.params.code;
+
+    if (!accountantId) {
+      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    }
+
+    if (!productcode ) {
+      return res.status(400).json({ error: 'Invalid product Code' });
+    }
+
+    const product = await prisma.product.findUnique({
+      where: {
+        prod_code: productcode,
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error('Error getting product by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 
