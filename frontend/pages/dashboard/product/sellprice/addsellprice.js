@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Link from "next/link";
 
 const EditSellPrice = () => {
   const router = useRouter();
@@ -64,6 +65,9 @@ const EditSellPrice = () => {
         >
           {loading ? 'Loading...' : 'Enter Here'}
         </button>
+        <Link href="/dashboard/product/sellprice/sellhistory" className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-gray-800 ml-4 mt-4">
+      Sell History
+      </Link>
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
     </div>

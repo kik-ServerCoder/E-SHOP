@@ -98,9 +98,33 @@ const handlesellProduct = async () => {
     });
 
     if (response.status === 201) {
-      router.push("/dashboard/product/sellprice/addsellprice");
+      console.log("Ok.")
     } else {
       setError(`Error updating product: ${response.statusText}`);
+    }
+    const sellPriceHistoryData = {
+      prod_code: productsellData.prod_code,
+      prod_name: productsellData.prod_name,
+      prod_sellsku: String(unitsToReduce),
+      prod_sellprice: productsellData.prod_sellprice,
+      prod_totalSP: productsellData.prod_totalSP,
+      
+    };
+
+   
+    const responseHistory = await axios.post('http://localhost:3000/product/prodsellpricetracking', sellPriceHistoryData, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (responseHistory.status === 201) {
+      router.push("/dashboard/product/sellprice/addsellprice");
+ 
+    } else {
+      console.error(`Error updating SellPriceHistory table: ${responseHistory.statusText}`);
+   
     }
   } catch (error) {
     setError(`Error updating product: ${error.message}`);
@@ -135,6 +159,9 @@ const handlesellProduct = async () => {
             />
           </div>
           <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Current Quantity: {productsellData.prod_sku}</label>
+          </div>
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Product Sell Price:</label>
             <input
               type="text"
@@ -146,7 +173,7 @@ const handlesellProduct = async () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Units to Reduce:</label>
+            <label className="block text-sm font-medium text-gray-600">Sold Units:</label>
             <input
               type="text"
               name="unitsToReduce"

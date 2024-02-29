@@ -34,6 +34,8 @@ model Accountant {
   username     String    @unique
   products     Product[]
   passwordResetToken passwordResetToken[]
+  SellPriceHistory  SellPriceHistory[]
+  BuyPriceHistory   BuyPriceHistory[]
 }
 
 model passwordResetToken {
@@ -41,6 +43,30 @@ model passwordResetToken {
   token     String   @unique
   expiresAt DateTime
   accountantId   Int               
+  accountant   Accountant   @relation(fields: [accountantId], references: [acct_ID])
+}
+
+model SellPriceHistory {
+  id             Int      @id @default(autoincrement())
+  prod_code    String
+  prod_name    String
+  prod_sellsku   String
+  prod_sellprice  String
+  prod_totalSP    String
+  createdAt      DateTime @default(now())
+   accountantId   Int               
+  accountant   Accountant   @relation(fields: [accountantId], references: [acct_ID])
+}
+
+model BuyPriceHistory {
+  id             Int      @id @default(autoincrement())
+  prod_code    String
+  prod_name    String
+  prod_buysku   String
+  prod_buyprice  String
+  prod_totalBP    String
+  createdAt      DateTime @default(now())
+   accountantId   Int               
   accountant   Accountant   @relation(fields: [accountantId], references: [acct_ID])
 }
 

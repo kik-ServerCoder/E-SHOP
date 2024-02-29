@@ -99,9 +99,33 @@ const handlebuyProduct = async () => {
     });
 
     if (response.status === 200) {
-      router.push("/dashboard/product/buyPrice/addbuyprice");
+      console.log("Ok.")
     } else {
       setError(`Error updating product: ${response.statusText}`);
+    }
+    const buyPriceHistoryData = {
+      prod_code: productbuyData.prod_code,
+      prod_name: productbuyData.prod_name,
+      prod_buysku: String(unitsToAdd),
+      prod_buyprice: productbuyData.prod_buyprice,
+      prod_totalBP: productbuyData.prod_totalBP,
+      
+    };
+
+   
+    const responseHistory = await axios.post('http://localhost:3000/product/prodbuypricetracking', buyPriceHistoryData, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (responseHistory.status === 201) {
+      router.push("/dashboard/product/buyPrice/addbuyprice");
+ 
+    } else {
+      console.error(`Error updating buyPriceHistory table: ${responseHistory.statusText}`);
+   
     }
   } catch (error) {
     setError(`Error updating product: ${error.message}`);
@@ -153,7 +177,7 @@ const handlebuyProduct = async () => {
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Updated Quantity: {AddedQuantity}</label>
           </div>
-<div className="mb-4">
+            <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Product Buy Price:</label>
             <input
               type="text"

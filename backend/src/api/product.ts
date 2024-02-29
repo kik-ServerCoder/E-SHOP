@@ -139,8 +139,53 @@ router.patch('/editsellprice/:productcode', verifyToken, checkBlacklist, async (
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+router.post('/prodsellpricetracking', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    
+    const {
+      prod_code,
+      prod_name,
+      prod_sellsku,
+      prod_sellprice,
+      prod_totalSP
+    } = req.body;
 
+    if (!prod_code || !prod_name || !prod_sellsku || !prod_sellprice || !prod_totalSP) {
+      return res.status(400).json({ errors: ['Product name, product code, and product units are required fields'] });
+    }
 
+    const accountantId = req.decodedUser?.acct_ID;
+
+    if (!accountantId) {
+      return res.status(401).json({ message: 'Invalid or missing accountant ID' });
+    }
+    const newProduct = await prisma.sellPriceHistory.create({
+      data: {
+        prod_code,
+        prod_name,
+        prod_sellsku,
+        prod_sellprice,
+        prod_totalSP,
+        accountant: { connect: { acct_ID: parseInt(accountantId) } },
+      },
+    });
+
+    res.status(201).json({ message: 'Product history added successfully. Product code: ' + newProduct.prod_code, identity: newProduct.prod_name });
+  } catch (error) {
+    console.error('Error creating product history:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/getselltracking',verifyToken,checkBlacklist, async (req, res) => {
+  try {
+    const selltracking = await prisma.sellPriceHistory.findMany();
+    res.json(selltracking);
+  } catch (error) {
+    console.error('Error fetching sell tracking:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 router.patch('/editbuyprice/:productcode', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
@@ -185,7 +230,60 @@ router.patch('/editbuyprice/:productcode', verifyToken, checkBlacklist, async (r
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+router.post('/prodbuypricetracking', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const {
+      prod_code,
+      prod_name,
+      prod_buysku,
+      prod_buyprice,
+      prod_totalBP
+    } = req.body;
 
+    if (!prod_code || !prod_name || !prod_buysku || !prod_buyprice || !prod_totalBP) {
+      return res.status(400).json({ errors: ['Product name, product code, and product units are required fields'] });
+    }
+
+    
+    const accountantId = req.decodedUser?.acct_ID;
+    if (!accountantId) {
+      return res.status(401).json({ message: 'Invalid or missing accountant ID' });
+    }
+
+   
+    const newProduct = await prisma.buyPriceHistory.create({
+      data: {
+        prod_code,
+        prod_name,
+        prod_buysku,
+        prod_buyprice,
+        prod_totalBP,
+        accountant: { connect: { acct_ID: parseInt(accountantId) } },
+      },
+    });
+
+    
+    res.status(201).json({
+      message: 'Product history added successfully.',
+      product: { prod_code: newProduct.prod_code, prod_name: newProduct.prod_name },
+    });
+  } catch (error) {
+    
+    console.error('Error creating product history:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+router.get('/getbuytracking',verifyToken,checkBlacklist, async (req, res) => {
+  try {
+    const buytracking = await prisma.buyPriceHistory.findMany();
+    res.json(buytracking);
+  } catch (error) {
+    console.error('Error fetching sell tracking:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 router.delete('/deleteproduct/:productId', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {

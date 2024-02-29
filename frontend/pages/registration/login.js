@@ -75,7 +75,7 @@ const Login = () => {
         {error && <div className="text-red-500 mb-4">{error}</div>}
 
         <div className="text-right mb-4">
-          <Link href="/forgot-password" className="text-blue-500">
+          <Link href="/registration/forgetpass" className="text-blue-500">
             Forgot Password?
           </Link>
         </div>
