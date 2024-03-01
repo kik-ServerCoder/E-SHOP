@@ -56,6 +56,9 @@ const AddProductForm = () => {
           },
         }
       );
+      if (parseInt(response.prod_sku) <= 0) {
+        throw new Error('Product SKU must be a positive value.');
+      }
 
       if (response.status === 201) {
         router.push('/dashboard/product/allproducts');

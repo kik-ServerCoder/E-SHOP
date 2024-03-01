@@ -69,13 +69,12 @@ const EditsellProduct = () => {
     const unitsToAddValue = parseInt(unitsToAdd) || 0;
   
     const updatedQuantity = originalQuantity + unitsToAddValue;
-    const prod_totalBP = (price * updatedQuantity).toFixed();
+    const prod_totalBP = (price * unitsToAddValue).toFixed();
   
     setProductbuyData((prevData) => ({ ...prevData, prod_totalBP }));
     setAddedQuantity(updatedQuantity);
   };
-  
-
+    
 
 const handlebuyProduct = async () => {
   try {
@@ -97,7 +96,9 @@ const handlebuyProduct = async () => {
         Authorization: `Bearer ${authToken}`,
       },
     });
-
+    if (parseInt(response.prod_buysku) <= 0) {
+      throw new Error('Product SKU must be a positive value.');
+    }
     if (response.status === 200) {
       console.log("Ok.")
     } else {
@@ -164,7 +165,7 @@ const handlebuyProduct = async () => {
             <label className="block text-sm font-medium text-gray-600">Current Quantity: {productbuyData.prod_sku}</label>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Units to Add:</label>
+            <label className="block text-sm font-medium text-gray-600">Buy Units</label>
             <input
               type="text"
               name="unitsToAdd"

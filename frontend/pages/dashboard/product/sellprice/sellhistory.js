@@ -57,7 +57,7 @@ const Viewbuytracking = () => {
   }
   
   if (product.length === 0) {
-    return <div className="text-center">No products found.</div>;
+    return <div className="text-center text-red-700">Zero Product sell history has found.</div>;
   }
 
   return (

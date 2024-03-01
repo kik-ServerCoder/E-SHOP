@@ -22,6 +22,7 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
     if ( !prod_code|| !prod_name || !prod_price || !prod_sku || !prod_price) {
       return res.status(400).json({ errors: ['Product name, product password, and product units are required fields'] });
     }
+    
 
     const accountantId = req.decodedUser?.acct_ID;
 

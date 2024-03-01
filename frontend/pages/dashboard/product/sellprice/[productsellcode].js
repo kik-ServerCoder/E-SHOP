@@ -69,10 +69,11 @@ const EditsellProduct = () => {
     const unitsToReduceValue = parseInt(unitsToReduce) || 0;
 
     const updatedQuantity = originalQuantity - unitsToReduceValue;
-    const prod_totalSP = (price * unitsToReduceValue).toFixed();
+     setReducedQuantity(updatedQuantity);
+     const prod_totalSP = (price * unitsToReduceValue).toFixed();
 
     setProductsellData((prevData) => ({ ...prevData, prod_totalSP }));
-    setReducedQuantity(updatedQuantity);
+   
   };
 
 
@@ -96,7 +97,9 @@ const handlesellProduct = async () => {
         Authorization: `Bearer ${authToken}`,
       },
     });
-
+    if (parseInt(response.prod_sellsku) <= 0) {
+      throw new Error('Product SKU must be a positive value.');
+    }
     if (response.status === 201) {
       console.log("Ok.")
     } else {
@@ -157,23 +160,15 @@ const handlesellProduct = async () => {
               readOnly
               className="mt-1 p-2 w-full border rounded-md"
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Current Quantity: {productsellData.prod_sku}</label>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Product Sell Price:</label>
-            <input
-              type="text"
-              name="prod_sellprice"
-              value={productsellData.prod_sellprice || ''}
-              onChange={handleInputChange}
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
+             </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Sold Units:</label>
+            <label className="block text-sm font-medium text-gray-600"> <br></br>Current product Quantity: {productsellData.prod_sku}</label>
+          </div>
+        
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600"><br></br>Sold products:</label>
             <input
               type="text"
               name="unitsToReduce"
@@ -183,12 +178,22 @@ const handlesellProduct = async () => {
             />
           </div>
 
+         
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Current Quantity: {reducedQuantity}</label>
+            <label className="block text-sm font-medium text-gray-600"><br></br>Product Sell Price:</label>
+            <input
+              type="text"
+              name="prod_sellprice"
+              value={productsellData.prod_sellprice || ''}
+              onChange={handleInputChange}
+              className="mt-1 p-2 w-full border rounded-md"
+            />
           </div>
-
+         <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600"><br></br>Product left: {reducedQuantity}</label>
+          </div>   
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Total Sell Price:</label>
+            <label className="block text-sm font-medium text-gray-600"><br></br>Total Sell Price:</label>
             <input
               type="text"
               name="prod_totalsP"
@@ -197,7 +202,7 @@ const handlesellProduct = async () => {
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
+     
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-600">
             Update Sell Price

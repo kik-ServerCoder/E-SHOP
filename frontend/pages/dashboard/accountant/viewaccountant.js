@@ -83,15 +83,13 @@ const viewAccountant = () => {
           )} 
         </div>
         <div className="flex justify-center mt-4">
-        <div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48 flex items-center justify-center hover:bg-gray-400">
-          <Link href="./accountant/allaccountant">All Accountant</Link>
-        </div>
-        <div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48  flex items-center justify-center hover:bg-gray-400">
-          <Link href="./accountant/updateaccountant">Update Profile</Link>
-        </div>
-        <div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48  flex items-center justify-center hover:bg-gray-400">
-          <Link href="./accountant/viewaccountant">View Profile</Link>
-        </div>
+         <Link href="/dashboard/accountant/allaccountant"><div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48 flex items-center justify-center hover:bg-gray-400">
+         All Accountant
+        </div></Link>
+        <Link href="/dashboard/accountant/updateaccountant"><div className=" bg-gray-300 text-gray-800 font-bold p-8 m-4 w-64 h-48  flex items-center justify-center hover:bg-gray-400">
+          Update Profile
+        </div></Link>
+       
       </div>
     </div>
     </div>
