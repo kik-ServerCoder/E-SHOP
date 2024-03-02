@@ -176,7 +176,7 @@ const handlebuyProduct = async () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Updated Quantity: {AddedQuantity}</label>
+            <label className="block text-sm font-medium text-gray-600">Updated Quantity: {parseInt(productbuyData.prod_sku)+parseInt(unitsToAdd)}</label>
           </div>
             <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Product Buy Price:</label>

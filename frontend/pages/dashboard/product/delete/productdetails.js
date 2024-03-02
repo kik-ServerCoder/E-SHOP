@@ -54,7 +54,7 @@ const ProductDetails = ({ productdelId }) => {
       });
 
      
-      router.push('/dashboard/product/allproducts');
+      router.push('/dashboard/product/delete/deleteproduct');
     } catch (error) {
       console.error('Error deleting product:', error);
       setError('Error deleting product. Please try again.');

@@ -45,15 +45,23 @@ const EditSellPrice = () => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleCheckProduct();
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-semibold mb-4">Search with Product Code to Add Sell Price</h1>
+        <h1 className="text-2xl font-semibold mb-4">Enter Product_Code to Add Sell Price</h1>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           <input
             type="text"
             value={productsellcode} 
             onChange={handleInputChange}
+            onKeyPress={handleKeyPress} 
+            autoFocus
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />
         </label>
@@ -63,11 +71,9 @@ const EditSellPrice = () => {
           className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-800 mt-4"
           disabled={loading}
         >
-          {loading ? 'Loading...' : 'Enter Here'}
+          {loading ? 'Loading...' : 'Go..'}
         </button>
-        <Link href="/dashboard/product/sellprice/sellhistory" className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-gray-800 ml-4 mt-4">
-      Sell History
-      </Link>
+        
         {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
     </div>

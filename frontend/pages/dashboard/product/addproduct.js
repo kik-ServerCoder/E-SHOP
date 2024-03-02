@@ -7,9 +7,9 @@ const AddProductForm = () => {
   const [formData, setFormData] = useState({
     prod_code: '',
     prod_name: '',
-    prod_price: '',
+    
     prod_sku: '',
-    prod_totalPrice: '',
+  
   });
 
   const [error, setError] = useState(null);
@@ -19,21 +19,13 @@ const AddProductForm = () => {
     setFormData((prevData) => {
       const newData = { ...prevData, [name]: value };
 
-      if (name === 'prod_sku' || name === 'prod_price') {
-        calculateTotalPrice(newData);
-      }
+      
 
       return newData;
     });
   };
 
-  const calculateTotalPrice = (data) => {
-    const price = parseInt(data.prod_price) || 0;
-    const quantity = parseInt(data.prod_sku) || 0;
-    const totalPrice = price * quantity;
 
-    setFormData((prevData) => ({ ...prevData, prod_totalPrice: totalPrice.toFixed() }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,9 +58,9 @@ const AddProductForm = () => {
         setFormData({
           prod_code: '',
           prod_name: '',
-          prod_price: '',
+         
           prod_sku: '',
-          prod_totalPrice: '',
+        
         });
       }
     } catch (error) {
@@ -118,17 +110,8 @@ if (error.response.status == 500){
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Price:</label>
-            <input
-              type="text"
-              name="prod_price"
-              value={formData.prod_price}
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
-          <div className="mb-4">
+          
+          {/* <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600">Quantity:</label>
             <input
               type="number"
@@ -137,17 +120,8 @@ if (error.response.status == 500){
               onChange={handleChange}
               className="mt-1 p-2 w-full border rounded-md"
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Total Price:</label>
-            <input
-              type="text"
-              name="prod_totalPrice"
-              value={formData.prod_totalPrice}
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
+          </div> */}
+          
 
           {error && <p className="text-red-500 mb-4">{error}</p>}
 

@@ -14,9 +14,10 @@ const EditsellProduct = () => {
     prod_totalSP: '',
   });
 
-  const [unitsToReduce, setUnitsToReduce] = useState('');
+  const [unitsToReduce, setUnitsToReduce] = useState(1);
   const [reducedQuantity, setReducedQuantity] = useState('');
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchProductsellData = async () => {
@@ -63,78 +64,85 @@ const EditsellProduct = () => {
     });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handlesellProduct();
+    }
+  };
+
   const calculateTotalPrice = (data) => {
     const price = parseFloat(data.prod_sellprice) || 0;
     const originalQuantity = parseInt(productsellData.prod_sku) || 0;
     const unitsToReduceValue = parseInt(unitsToReduce) || 0;
 
     const updatedQuantity = originalQuantity - unitsToReduceValue;
-     setReducedQuantity(updatedQuantity);
-     const prod_totalSP = (price * unitsToReduceValue).toFixed();
+    setReducedQuantity(updatedQuantity);
+    const prod_totalSP = (price * unitsToReduceValue).toFixed();
 
     setProductsellData((prevData) => ({ ...prevData, prod_totalSP }));
-   
   };
 
+  const handlesellProduct = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
 
-const handlesellProduct = async () => {
-  try {
-    const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        router.push("/");
+        return;
+      }
 
-    if (!authToken) {
-      router.push("/");
-      return;
+      const updatedQuantity = String(parseInt(productsellData.prod_sku) - parseInt(unitsToReduce || 0));
+
+      const response = await axios.patch(`http://localhost:3000/product/editsellprice/${productsellcode}`, {
+        ...productsellData,
+        prod_sku: updatedQuantity,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      if (parseInt(response.prod_sellsku) <= 0) {
+        throw new Error('Product SKU must be a positive value.');
+      }
+      if (response.status === 201) {
+        setSuccessMessage('Sell price updated successfully.');
+      } else {
+        setError(`Error updating product: ${response.statusText}`);
+      }
+      const sellPriceHistoryData = {
+        prod_code: productsellData.prod_code,
+        prod_name: productsellData.prod_name,
+        prod_sellsku: String(unitsToReduce),
+        prod_sellprice: productsellData.prod_sellprice,
+        prod_totalSP: productsellData.prod_totalSP,
+      };
+
+      const responseHistory = await axios.post('http://localhost:3000/product/prodsellpricetracking', sellPriceHistoryData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (responseHistory.status !== 201) {
+        console.error(`Error updating SellPriceHistory table: ${responseHistory.statusText}`);
+      }
+    } catch (error) {
+      setError(`Error updating product: ${error.message}`);
     }
+  };
 
-    const updatedQuantity = String(parseInt(productsellData.prod_sku) - parseInt(unitsToReduce || 0));
+  useEffect(() => {
+    if (successMessage) {
+      const redirectTimer = setTimeout(() => {
+        router.push("/dashboard/product/sellprice/addsellprice");
+      }, 500); 
 
-    const response = await axios.patch(`http://localhost:3000/product/editsellprice/${productsellcode}`, {
-      ...productsellData,
-      prod_sku: updatedQuantity,
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
-    if (parseInt(response.prod_sellsku) <= 0) {
-      throw new Error('Product SKU must be a positive value.');
+      return () => clearTimeout(redirectTimer);
     }
-    if (response.status === 201) {
-      console.log("Ok.")
-    } else {
-      setError(`Error updating product: ${response.statusText}`);
-    }
-    const sellPriceHistoryData = {
-      prod_code: productsellData.prod_code,
-      prod_name: productsellData.prod_name,
-      prod_sellsku: String(unitsToReduce),
-      prod_sellprice: productsellData.prod_sellprice,
-      prod_totalSP: productsellData.prod_totalSP,
-      
-    };
-
-   
-    const responseHistory = await axios.post('http://localhost:3000/product/prodsellpricetracking', sellPriceHistoryData, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
-
-    if (responseHistory.status === 201) {
-      router.push("/dashboard/product/sellprice/addsellprice");
- 
-    } else {
-      console.error(`Error updating SellPriceHistory table: ${responseHistory.statusText}`);
-   
-    }
-  } catch (error) {
-    setError(`Error updating product: ${error.message}`);
-  }
-};
-
-
+  }, [successMessage, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -142,67 +150,37 @@ const handlesellProduct = async () => {
         <h2 className="text-2xl font-bold mb-4">Edit Sell Price</h2>
         <form onSubmit={(e) => { e.preventDefault(); handlesellProduct(); }}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Code:</label>
+            <label className="block text-sm font-medium text-gray-600">Code: {productsellData.prod_code}</label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Name: {productsellData.prod_name}</label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Current product Quantity: {productsellData.prod_sku}</label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Product Sell Price:</label>
             <input
               type="text"
-              name="prod_code"
-              value={productsellData.prod_code}
-              readOnly
+              name="prod_sellprice"
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              autoFocus
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">Name:</label>
-            <input
-              type="text"
-              name="prod_name"
-              value={productsellData.prod_name}
-              readOnly
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-             </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600"> <br></br>Current product Quantity: {productsellData.prod_sku}</label>
-          </div>
-        
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600"><br></br>Sold products:</label>
+            <label className="block text-sm font-medium text-gray-600">Sold products:</label>
             <input
               type="text"
               name="unitsToReduce"
               value={unitsToReduce}
               onChange={(e) => setUnitsToReduce(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="mt-1 p-2 w-full border rounded-md"
             />
           </div>
-
-         
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600"><br></br>Product Sell Price:</label>
-            <input
-              type="text"
-              name="prod_sellprice"
-              value={productsellData.prod_sellprice || ''}
-              onChange={handleInputChange}
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
-         <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600"><br></br>Product left: {reducedQuantity}</label>
-          </div>   
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600"><br></br>Total Sell Price:</label>
-            <input
-              type="text"
-              name="prod_totalsP"
-              value={productsellData.prod_totalSP}
-              readOnly
-              className="mt-1 p-2 w-full border rounded-md"
-            />
-          </div>
-     
+          {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
           {error && <p className="text-red-500 mb-4">{error}</p>}
           <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-600">
             Update Sell Price

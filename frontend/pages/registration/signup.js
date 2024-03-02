@@ -78,7 +78,7 @@ const SignUp = () => {
                 type="password"
                 id="pass"
                 name="pass"
-                value={formData.pass}
+               
                 onChange={handleChange}
                 className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
               />
@@ -91,7 +91,7 @@ const SignUp = () => {
                 type="text"
                 id="username"
                 name="username"
-                value={formData.username}
+                
                 onChange={handleChange}
                 className="border rounded-md py-2 px-3 w-full focus:outline-none focus:border-blue-500"
               />
