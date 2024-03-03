@@ -53,7 +53,7 @@ const AddProductForm = () => {
       }
 
       if (response.status === 201) {
-        router.push('/dashboard/product/allproducts');
+        router.push('/dashboard/product/buyPrice/addbuyprice');
 
         setFormData({
           prod_code: '',

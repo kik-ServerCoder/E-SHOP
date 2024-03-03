@@ -58,7 +58,7 @@ const router = express.Router();
       }
   
       const token = jwt.sign({ acct_ID: accountant.acct_ID, username: accountant.username }, process.env.JWT_SECRET!, {
-        expiresIn: '1h',
+        expiresIn: '2h',
       }); 
 
       const user = {...accountant, pass:undefined};
@@ -103,7 +103,7 @@ const router = express.Router();
         return res.status(404).json({ message: 'accountant not found.' });
       }
       const resetToken = jwt.sign({ username: accountant.username }, process.env.JWT_SECRET!, {
-        expiresIn: '1h',
+        expiresIn: '2h',
       });
       await prisma.passwordResetToken.create({
         data: {

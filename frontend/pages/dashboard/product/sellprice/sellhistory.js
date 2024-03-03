@@ -62,7 +62,7 @@ const Viewbuytracking = () => {
 
   return (
     <div className="mt-8 overflow-x-auto max-w-screen-xl ml-4 mr-2">
-      <h1 className="text-3xl font-bold mb-4">SEll Price tracking</h1>
+      <h1 className="text-3xl font-bold mb-4">Sell Price tracking</h1>
       <table className="w-full bg-white border border-gray-300 rounded-md mx-auto">
         <thead>
           <tr className="bg-gray-200">

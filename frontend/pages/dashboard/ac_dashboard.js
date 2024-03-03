@@ -14,38 +14,38 @@ const ac_dashboard = () => {
     <div className="flex flex-wrap justify-center ml-40 mr-40">
    
       <Link href="./product/addproduct">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4 w-72 h-56 flex items-center justify-center hover:bg-gray-300">
+        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4 w-72 h-56 flex items-center justify-center hover:bg-blue-200">
          Add Product
         </div>
       </Link>
       <Link href="./product/allproducts">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4  w-72 h-56 flex items-center justify-center hover:bg-gray-300">
+        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4  w-72 h-56 flex items-center justify-center hover:bg-blue-200">
           View All Products
         </div>
       </Link>
       <Link href="./product/update/editproduct">
-        <div className=" bg-gray-200 text-gray-800 font-bold p-8 m-4  w-72 h-56 flex items-center justify-center hover:bg-gray-300">
+        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4  w-72 h-56 flex items-center justify-center hover:bg-blue-300">
           Update Product
         </div>
       </Link>
       <Link href="/dashboard/product/buyPrice/buyhistory">
-        <div className=" bg-cyan-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-cyan-200">
+        <div className=" bg-green-100 text-black font-bold p-8 m-4 w-38 h-24 flex items-center justify-center hover:bg-green-200">
         Buy History
         </div>
       </Link>
       
       <Link href="./product/buyPrice/addbuyprice">
-        <div className=" bg-green-500 text-white font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-green-400">
+        <div className=" bg-green-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-green-500">
           Add Buy Price
         </div>
       </Link>
       <Link href="./product/sellprice/addsellprice">
-        <div className=" bg-red-500 text-white font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-red-400">
+        <div className=" bg-red-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-red-500">
           Add Sell Price
         </div>
       </Link>
       <Link href="/dashboard/product/sellprice/sellhistory">
-        <div className=" bg-cyan-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-cyan-200">
+        <div className=" bg-red-100 text-black font-bold p-8 m-4 w-38 h-24 flex items-center justify-center hover:bg-red-200">
          Sell History
         </div>
       </Link>

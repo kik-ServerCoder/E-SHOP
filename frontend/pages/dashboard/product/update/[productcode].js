@@ -89,6 +89,7 @@ const EditProduct = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl font-semibold mb-4">Edit Product</h1>
+        <h3 className="text-red-200 text-xl font-semibold mb-4">Code and Sku are must *</h3>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form>
          
