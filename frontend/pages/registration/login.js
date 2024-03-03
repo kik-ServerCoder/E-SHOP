@@ -30,7 +30,7 @@ const Login = () => {
         setError('');
 
 
-       router.push("/dashboard/ac_dashboard");
+       router.push("/welcome");
       } else {
         setError(`Login failed: ${message}`);
         console.error("Login failed");

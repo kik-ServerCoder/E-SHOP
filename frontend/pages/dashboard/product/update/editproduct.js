@@ -4,10 +4,10 @@ import { useRouter } from 'next/router';
 
 const EditProductIndex = () => {
   const router = useRouter();
-  const [productId, setProductId] = useState('');
+  const [productcode, setProductcode] = useState('');
 
   const handleInputChange = (e) => {
-    setProductId(e.target.value);
+    setProductcode(e.target.value);
   };
 
   const handleCheckProduct = async () => {
@@ -19,18 +19,18 @@ const EditProductIndex = () => {
         return;
       }
 
-      const response = await axios.get(`http://localhost:3000/product/getproduct/${productId}`, {
+      const response = await axios.get(`http://localhost:3000/product/getproductwithcode/${productcode}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`,
         },
       });
 
-      console.log(response.data);
+    
 
       if (response.data) {
        
-        router.push(`/dashboard/product/update/${productId}`);
+        router.push(`/dashboard/product/update/${productcode}`);
       } else {
         console.log('Product not found');
        
@@ -43,12 +43,12 @@ const EditProductIndex = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-semibold mb-4">Search with Product ID to update</h1>
+        <h1 className="text-2xl font-semibold mb-4">Search with Product Code to update</h1>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           
           <input
             type="text"
-            value={productId}
+            value={productcode}
             onChange={handleInputChange}
             className="mt-1 p-2 border border-gray-300 rounded w-full"
           />

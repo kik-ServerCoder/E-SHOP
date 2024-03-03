@@ -37,7 +37,7 @@ const Footer = () => {
       localStorage.removeItem('accountantName');
 
      
-      router.push("/");
+      router.push("/registration/logout");
     } catch (error) {
       
       alert('Logout failed with error:', error);

@@ -3,7 +3,15 @@ interface DecodedAccountantid {
     
   }
   
+  
   export { DecodedAccountantid };
+
+interface DecodedAccountantusername {
+    username: string;
+    
+  }
+export{DecodedAccountantusername};
+
 
 
 

@@ -15,10 +15,10 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
       return res.status(400).json({ error: 'Product code and product name are required fields' });
     }
 
-    const accountantId = req.decodedUser?.acct_ID;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ error: 'Invalid or missing accountant ID' });
+    if (!accountantusername) {
+      return res.status(401).json({ error: 'Invalid or missing accountant' });
     }
 
     const newProduct = await prisma.product.create({
@@ -26,7 +26,7 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
         prod_code,
         prod_name,
        
-        accountant: { connect: { acct_ID: parseInt(accountantId) } },
+        accountant: { connect: { username: accountantusername } },
       },
     });
 
@@ -46,36 +46,35 @@ router.post('/addproduct', verifyToken, checkBlacklist, async (req: CustomReques
 
 
 
-router.put('/editproduct/:productId', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+router.put('/editproduct/:productcode', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     const { prod_name, prod_code, prod_sku, prod_sellprice, prod_buyprice, prod_totalSP, prod_totalBP } = req.body;
-    const productId = parseInt(req.params.productId, 10);
+    const productcode = req.params.productcode;
 
-    if (!prod_name  || !prod_sku) {
-      return res.status(400).json({ errors: ['Product name, product password, and product units are required fields'] });
+    if (!prod_name || !prod_code ) {
+      return res.status(400).json({ errors: ['Product name and code are required fields'] });
     }
 
-    const accountantId = req.decodedUser?.acct_ID;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ message: 'accountant ID not found' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
 
     const existingProduct = await prisma.product.findUnique({
-      where: { prod_ID: productId },
+      where: { prod_code: productcode },
       include: { accountant: true },
     });
 
-    if (!existingProduct || existingProduct.accountantId !== parseInt(accountantId)) {
+    if (!existingProduct) {
       return res.status(404).json({ message: 'Product not found or unauthorized to edit' });
     }
 
     const updatedProduct = await prisma.product.update({
-      where: { prod_ID: productId },
+      where: { prod_code: productcode },
       data: {
         prod_name,
-        prod_code,
-      
+        prod_code,    
         prod_sku: Number(prod_sku),
         prod_sellprice,
         prod_buyprice,
@@ -102,18 +101,18 @@ router.patch('/editsellprice/:productcode', verifyToken, checkBlacklist, async (
     if (!prod_sku || !prod_sellprice || !prod_totalSP) {
       return res.status(400).json({ errors: ['product units , product selling price and product total sell price are required fields'] });
     }
-    const accountantId = req.decodedUser?.acct_ID;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ message: 'accountant ID not found' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
 
     const existingProduct = await prisma.product.findUnique({
       where: { prod_code: productcode },
       include: { accountant: true },
     });
-
-    if (!existingProduct || existingProduct.accountantId !== parseInt(accountantId)) {
+// || existingProduct.accountantId !== parseInt(accountantId)
+    if (!existingProduct ) {
       return res.status(404).json({ message: 'Product not found or unauthorized to edit' });
     }
     const updatedProduct = await prisma.product.update({
@@ -149,10 +148,10 @@ router.post('/prodsellpricetracking', verifyToken, checkBlacklist, async (req: C
       return res.status(400).json({ errors: ['Product name, product code, and product units are required fields'] });
     }
 
-    const accountantId = req.decodedUser?.acct_ID;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ message: 'Invalid or missing accountant ID' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
     const newProduct = await prisma.sellPriceHistory.create({
       data: {
@@ -161,7 +160,7 @@ router.post('/prodsellpricetracking', verifyToken, checkBlacklist, async (req: C
         prod_sellsku,
         prod_sellprice,
         prod_totalSP,
-        accountant: { connect: { acct_ID: parseInt(accountantId) } },
+        accountant: { connect: { username: accountantusername } },
       },
     });
 
@@ -172,8 +171,13 @@ router.post('/prodsellpricetracking', verifyToken, checkBlacklist, async (req: C
   }
 });
 
-router.get('/getselltracking', verifyToken, checkBlacklist, async (req, res) => {
+router.get('/getselltracking', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
+    }
     const selltracking = await prisma.sellPriceHistory.findMany();
     res.json(selltracking);
   } catch (error) {
@@ -193,10 +197,10 @@ router.patch('/editbuyprice/:productcode', verifyToken, checkBlacklist, async (r
     if (!prod_sku || !prod_buyprice || !prod_totalBP) {
       return res.status(400).json({ errors: ['product units , product Buying price and product total buy price are required fields'] });
     }
-    const accountantId = req.decodedUser?.acct_ID;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ message: 'accountant ID not found' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
 
     const existingProduct = await prisma.product.findUnique({
@@ -204,7 +208,7 @@ router.patch('/editbuyprice/:productcode', verifyToken, checkBlacklist, async (r
       include: { accountant: true },
     });
 
-    if (!existingProduct || existingProduct.accountantId !== parseInt(accountantId)) {
+    if (!existingProduct ) {
       return res.status(404).json({ message: 'Product not found or unauthorized to edit' });
     }
     const updatedProduct = await prisma.product.update({
@@ -240,9 +244,10 @@ router.post('/prodbuypricetracking', verifyToken, checkBlacklist, async (req: Cu
     }
 
 
-    const accountantId = req.decodedUser?.acct_ID;
-    if (!accountantId) {
-      return res.status(401).json({ message: 'Invalid or missing accountant ID' });
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
 
 
@@ -253,7 +258,7 @@ router.post('/prodbuypricetracking', verifyToken, checkBlacklist, async (req: Cu
         prod_buysku,
         prod_buyprice,
         prod_totalBP,
-        accountant: { connect: { acct_ID: parseInt(accountantId) } },
+        accountant: { connect: { username: accountantusername } },
       },
     });
 
@@ -270,8 +275,13 @@ router.post('/prodbuypricetracking', verifyToken, checkBlacklist, async (req: Cu
 });
 
 
-router.get('/getbuytracking', verifyToken, checkBlacklist, async (req, res) => {
+router.get('/getbuytracking', verifyToken, checkBlacklist, async (req: CustomRequest, res:Response) => {
   try {
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
+    }
     const buytracking = await prisma.buyPriceHistory.findMany();
     res.json(buytracking);
   } catch (error) {
@@ -284,18 +294,13 @@ router.delete('/deleteproduct/:productId', verifyToken, checkBlacklist, async (r
   try {
     const productId = parseInt(req.params.productId, 10);
 
-    const accountantId = req.decodedUser?.acct_ID;
-
-    if (!accountantId) {
-      return res.status(401).json({ message: 'Invalid or missing accountant ID' });
-    }
 
     const existingProduct = await prisma.product.findUnique({
       where: { prod_ID: productId },
       include: { accountant: true },
     });
 
-    if (!existingProduct || existingProduct.accountantId !== parseInt(accountantId)) {
+    if (!existingProduct ) {
       return res.status(404).json({ message: 'Product not found or unauthorized credentials to delete' });
     }
 
@@ -312,9 +317,13 @@ router.delete('/deleteproduct/:productId', verifyToken, checkBlacklist, async (r
 
 
 
-
-router.get('/getallproductlists', verifyToken, checkBlacklist, async (req, res) => {
+router.get('/getallproductlists', verifyToken, checkBlacklist, async (req:CustomRequest, res:Response) => {
   try {
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
+    }
     const products = await prisma.product.findMany();
     res.json(products);
   } catch (error) {
@@ -325,12 +334,14 @@ router.get('/getallproductlists', verifyToken, checkBlacklist, async (req, res) 
 
 router.get('/getproduct/:id', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const accountantId: number | undefined = req.userId;
+   
     const productID: number | undefined = parseInt(req.params.id);
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
+    
 
     if (isNaN(productID) || productID <= 0) {
       return res.status(400).json({ error: 'Invalid product ID' });
@@ -354,11 +365,13 @@ router.get('/getproduct/:id', verifyToken, checkBlacklist, async (req: CustomReq
 });
 router.get('/getproductwithcode/:code', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const accountantId: number | undefined = req.userId;
+   
     const productcode: string | undefined = req.params.code;
 
-    if (!accountantId) {
-      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant not found' });
     }
 
     if (!productcode) {

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const EditProduct = () => {
   const router = useRouter();
-  const { productId } = router.query;
+  const { productcode } = router.query;
 
   const [productData, setProductData] = useState({
     prod_name: '',
@@ -30,7 +30,7 @@ const EditProduct = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:3000/product/getproduct/${productId}`, {
+        const response = await axios.get(`http://localhost:3000/product/getproductwithcode/${productcode}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
@@ -50,10 +50,10 @@ const EditProduct = () => {
       }
     };
 
-    if (productId) {
+    if (productcode) {
       fetchProductData();
     }
-  }, [productId, router]);
+  }, [productcode, router]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,12 +63,17 @@ const EditProduct = () => {
   const handleUpdateProduct = async () => {
     try {
       const authToken = localStorage.getItem('authToken');
-      const response = await axios.put(`http://localhost:3000/product/editproduct/${productId}`, productData, {
+      const response = await axios.put(`http://localhost:3000/product/editproduct/${productcode}`, productData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
         },
       });
+      if (response.status === 400) {
+        setError("Product name and code must be filled");
+      } else {
+        setError(`Error updating product: ${response.statusText}`);
+      }
 
       if (response.status === 200) {
         router.push("/dashboard/product/allproducts");
@@ -76,7 +81,7 @@ const EditProduct = () => {
         setError(`Error updating product: ${response.statusText}`);
       }
     } catch (error) {
-      setError(`Error updating product: ${error.message}`);
+      setError(`Error updating product: ${error.response.statusText}`);
     }
   };
 
@@ -89,8 +94,8 @@ const EditProduct = () => {
          
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-               Enter Product ID:
-              <input type="text" name="prod_ID" value={productId || ''} readOnly className="mt-1 p-2 border border-gray-300 rounded w-full" />
+               Enter Product Code:
+              <input type="text" name="prod_code" value={productcode || ''} readOnly className="mt-1 p-2 border border-gray-300 rounded w-full" />
             </label>
           </div>
 

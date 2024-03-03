@@ -41,19 +41,19 @@ router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, 
 
 router.get('/getaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const accountantId: number | undefined = req.userId;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
-      return res.status(401).json({ error: 'Unauthorized. User ID not found.' });
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant Username not found' });
     }
 
     const accountant = await prisma.accountant.findUnique({
       where: {
-        acct_ID: accountantId,
+        username: accountantusername,
       },
     });
 
-    if (!accountant) {
+    if (!accountantusername) {
       return res.status(404).json({ error: 'Accountant not found' });
     }
 
@@ -67,7 +67,7 @@ router.get('/getaccountant', verifyToken, checkBlacklist, async (req: CustomRequ
 
 router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const accountantidnumber: number | undefined = req.userId;
+    const accountantusername = req.decodedUsername?.username;
     const { email, name,username } = req.body;
     
 
@@ -76,16 +76,18 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
     }
     const isAccountantOwner = await prisma.accountant.findFirst({
       where: {
-        acct_ID: accountantidnumber,
+        username: accountantusername,
       },
     });
 
-    if (!isAccountantOwner) {
-      return res.status(403).json({ error: 'Permission denied. You are not the owner of this account.' });
+    
+
+    if (! isAccountantOwner) {
+      return res.status(401).json({ message: 'accountant Username not found' });
     }
     const updatedAccountant = await prisma.accountant.update({
       where: {
-        acct_ID: accountantidnumber,
+        username: accountantusername,
       },
       data: {
         email,
@@ -95,8 +97,8 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
     });
 
     res.status(201).json({
-      message: 'Updated Accountant with Id: ' + updatedAccountant.acct_ID,
-      identity: updatedAccountant.username,
+      message: 'Updated Accountant with username: ' + updatedAccountant.username,
+      identity: updatedAccountant.name,
     });
   } catch (error) {
     console.error('Error updating Accountant:', error);
@@ -109,14 +111,14 @@ router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomR
 router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
    
-    const accountantId: number | undefined = req.userId;
+    const accountantusername = req.decodedUsername?.username;
 
-    if (!accountantId) {
+    if (!accountantusername) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const AccountantOwner = await prisma.accountant.findFirst({
       where: {
-        acct_ID: accountantId,
+        username: accountantusername,
       },
     });
 
@@ -127,7 +129,7 @@ router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: Cust
     
     await prisma.accountant.delete({
       where: {
-        acct_ID: accountantId,
+       username: accountantusername,
       },
     });
 
@@ -141,7 +143,8 @@ router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: Cust
    
 router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
-    const accountantidnumber: number | undefined = req.userId;
+    const accountantusername = req.decodedUsername?.username;
+
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
@@ -151,7 +154,7 @@ router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomReques
    
     const AccountantOwner = await prisma.accountant.findUnique({
       where: {
-        acct_ID: accountantidnumber,
+        username: accountantusername,
       },
     });
 
@@ -171,7 +174,7 @@ router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomReques
     
     const updatedAccountant = await prisma.accountant.update({
       where: {
-        acct_ID: accountantidnumber,
+       username: accountantusername,
       },
       data: {
         pass: hashedNewPassword,
@@ -188,8 +191,8 @@ router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomReques
     invalidatedTokens.add(token);;
 
     res.status(201).json({
-      message: 'Password changed successfully for Accountant with Id: ' + updatedAccountant.acct_ID,
-      identity: updatedAccountant.username,
+      message: 'Password changed successfully for Accountant with username: ' + updatedAccountant.username,
+      identity: updatedAccountant.name,
     });
   } catch (error) {
     console.error('Error changing password:', error);

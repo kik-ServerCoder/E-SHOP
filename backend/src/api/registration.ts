@@ -54,7 +54,7 @@ const router = express.Router();
         return res.status(401).json({ message: 'user not found' });
       }
       if (!accountant || !(await bcrypt.compare(pass, accountant.pass))) {
-        return res.status(401).json({ message: 'error in password' });
+        return res.status(401).json({ message: ' password did not match' });
       }
   
       const token = jwt.sign({ acct_ID: accountant.acct_ID, username: accountant.username }, process.env.JWT_SECRET!, {
@@ -102,14 +102,14 @@ const router = express.Router();
       if (!accountant) {
         return res.status(404).json({ message: 'accountant not found.' });
       }
-      const resetToken = jwt.sign({ userId: accountant.acct_ID }, process.env.JWT_SECRET!, {
+      const resetToken = jwt.sign({ username: accountant.username }, process.env.JWT_SECRET!, {
         expiresIn: '1h',
       });
       await prisma.passwordResetToken.create({
         data: {
           token: resetToken,
           expiresAt: new Date(Date.now() + 3600000),
-          accountantId : accountant.acct_ID,
+          username : accountant.username,
         },
       });
       res.json({ message: 'Password reset initiated. here is your token to reset password.', resetToken });
@@ -140,7 +140,7 @@ const router = express.Router();
       
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await prisma.accountant.update({
-        where: { acct_ID: resetToken. accountantId  },
+        where: { username :resetToken.username?.toString()  },
         data: { pass: hashedPassword },
       });
       try{await prisma.passwordResetToken.delete({

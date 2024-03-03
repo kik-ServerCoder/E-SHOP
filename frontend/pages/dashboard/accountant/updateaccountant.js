@@ -67,7 +67,7 @@ const UpdateAccountant = () => {
           Authorization: `Bearer ${authToken}`,
         },
       });
-      router.push("/dashboard/ac_dashboard");
+      router.push("/registration/logout");
     } catch (error) {
       console.error('Error saving changes:', error);
   

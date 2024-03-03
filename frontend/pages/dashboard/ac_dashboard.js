@@ -29,7 +29,7 @@ const ac_dashboard = () => {
         </div>
       </Link>
       <Link href="/dashboard/product/buyPrice/buyhistory">
-        <div className=" bg-cyan-200 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-cyan-100">
+        <div className=" bg-cyan-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-cyan-200">
         Buy History
         </div>
       </Link>
@@ -45,7 +45,7 @@ const ac_dashboard = () => {
         </div>
       </Link>
       <Link href="/dashboard/product/sellprice/sellhistory">
-        <div className=" bg-blue-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-blue-200">
+        <div className=" bg-cyan-300 text-black font-bold p-8 m-4 w-48 h-36 flex items-center justify-center hover:bg-cyan-200">
          Sell History
         </div>
       </Link>
