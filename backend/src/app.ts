@@ -11,7 +11,9 @@ const app = express();
 
 app.use(express.json());
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-app.use(cors());
+app.use(cors({
+  origin:  ['http://35.177.104.174:7000', 'http://localhost:7000'],
+}));
 app.use(express.json());
 
 app.use('/reg', regroutes);
