@@ -1,4 +1,4 @@
-
+import Link from 'next/link';
 import axios from "axios";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -53,6 +53,7 @@ const Footer = () => {
             Copyright©eshop All Rights Reserved
           </p>
         </div>
+        
       </div>
 
       <div>{!isLoggedIn ? (
@@ -64,10 +65,28 @@ const Footer = () => {
             
           </>
         ) : (
+          <>  <button
+          onClick={handleLogout}
+          className="text-red-600 ml-auto cursor-pointer font-bold hover:bg-white py-2 px-4 rounded"
+        >
+          Logout
+        </button>
+        <button
+          onClick={() => router.back()}
+          className="text-white ml-4 cursor-pointer bg-gray-800 hover:bg-gray-600 py-2 px-4 rounded"
+        >
+          Go Back
+        </button>
+            <Link href="/about">
+              <b className="text-gray-300 ml-4 cursor-pointer bg-gray-800 hover:bg-gray-600 py-2 px-4 rounded">About</b>
+            </Link>
+            <Link href="/">
+              <b className="text-gray-300 ml-4 cursor-pointer bg-gray-800 hover:bg-gray-600 py-2 px-4 rounded">Home</b>
+            </Link>
           
-          <button onClick={handleLogout} className="text-white ml-auto cursor-pointer">
-        Logout
-      </button>
+      </>
+          
+      
         )}</div>
      
     </div>

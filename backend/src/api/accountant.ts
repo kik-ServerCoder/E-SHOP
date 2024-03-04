@@ -12,7 +12,39 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 
+router.get('/getaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantusername = req.decodedUsername?.username;
 
+    if (!accountantusername) {
+      return res.status(401).json({ message: 'accountant Username not found' });
+    }
+
+    const accountant = await prisma.accountant.findUnique({
+      where: {
+        username: accountantusername,
+      },
+    });
+
+    if (!accountantusername) {
+      return res.status(404).json({ error: 'Accountant not found' });
+    }
+
+    res.status(200).json(accountant);
+  } catch (error) {
+    console.error('Error getting Accountant by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+router.get('/getallaccountantlists',verifyToken,checkBlacklist, async (req, res) => {
+    try {
+      const accountants = await prisma.accountant.findMany();
+      res.json(accountants);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, res: Response) => {
   try {
     const {
@@ -38,109 +70,6 @@ router.post('/addaccountant', verifyToken, checkBlacklist, async (req: Request, 
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-router.get('/getaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
-  try {
-    const accountantusername = req.decodedUsername?.username;
-
-    if (!accountantusername) {
-      return res.status(401).json({ message: 'accountant Username not found' });
-    }
-
-    const accountant = await prisma.accountant.findUnique({
-      where: {
-        username: accountantusername,
-      },
-    });
-
-    if (!accountantusername) {
-      return res.status(404).json({ error: 'Accountant not found' });
-    }
-
-    res.status(200).json(accountant);
-  } catch (error) {
-    console.error('Error getting Accountant by ID:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-
-router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
-  try {
-    const accountantusername = req.decodedUsername?.username;
-    const { email, name,username } = req.body;
-    
-
-    if (!email || !name || !username ) {
-      return res.status(400).json({ errors: ['Email, name, username and password are required fields'] });
-    }
-    const isAccountantOwner = await prisma.accountant.findFirst({
-      where: {
-        username: accountantusername,
-      },
-    });
-
-    
-
-    if (! isAccountantOwner) {
-      return res.status(401).json({ message: 'accountant Username not found' });
-    }
-    const updatedAccountant = await prisma.accountant.update({
-      where: {
-        username: accountantusername,
-      },
-      data: {
-        email,
-        name,
-        username
-      },
-    });
-
-    res.status(201).json({
-      message: 'Updated Accountant with username: ' + updatedAccountant.username,
-      identity: updatedAccountant.name,
-    });
-  } catch (error) {
-    console.error('Error updating Accountant:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-
-
-router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
-  try {
-   
-    const accountantusername = req.decodedUsername?.username;
-
-    if (!accountantusername) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    const AccountantOwner = await prisma.accountant.findFirst({
-      where: {
-        username: accountantusername,
-      },
-    });
-
-    if (!AccountantOwner) {
-      return res.status(403).json({ error: 'Permission denied. You do not have credentials.' });
-    }
-
-    
-    await prisma.accountant.delete({
-      where: {
-       username: accountantusername,
-      },
-    });
-
-    res.status(200).json({ message: 'Accountant deleted successfully',identity:AccountantOwner.name } );
-  } catch (error) {
-    console.error('Error deleting Accountant:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-   
 router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
     const accountantusername = req.decodedUsername?.username;
@@ -200,20 +129,85 @@ router.post('/changepass', verifyToken, checkBlacklist, async (req: CustomReques
   }
 });
 
+router.patch('/editaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+    const accountantusername = req.decodedUsername?.username;
+    const { email, name,username } = req.body;
+    
 
-
-
-
-router.get('/getallaccountantlists',verifyToken,checkBlacklist, async (req, res) => {
-    try {
-      const accountants = await prisma.accountant.findMany();
-      res.json(accountants);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    if (!email || !name || !username ) {
+      return res.status(400).json({ errors: ['Email, name, username and password are required fields'] });
     }
-  });
-  
+    const isAccountantOwner = await prisma.accountant.findFirst({
+      where: {
+        username: accountantusername,
+      },
+    });
+
+    
+
+    if (! isAccountantOwner) {
+      return res.status(401).json({ message: 'accountant Username not found' });
+    }
+    const updatedAccountant = await prisma.accountant.update({
+      where: {
+        username: accountantusername,
+      },
+      data: {
+        email,
+        name,
+        username
+      },
+    });
+
+    res.status(201).json({
+      message: 'Updated Accountant with username: ' + updatedAccountant.username,
+      identity: updatedAccountant.name,
+    });
+  } catch (error) {
+    console.error('Error updating Accountant:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+router.delete('/deleteaccountant', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
+  try {
+   
+    const accountantusername = req.decodedUsername?.username;
+
+    if (!accountantusername) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const AccountantOwner = await prisma.accountant.findFirst({
+      where: {
+        username: accountantusername,
+      },
+    });
+
+    if (!AccountantOwner) {
+      return res.status(403).json({ error: 'Permission denied. You do not have credentials.' });
+    }
+
+    
+    await prisma.accountant.delete({
+      where: {
+       username: accountantusername,
+      },
+    });
+
+    res.status(200).json({ message: 'Accountant deleted successfully',identity:AccountantOwner.name } );
+  } catch (error) {
+    console.error('Error deleting Accountant:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+   
+
+
+
+
+
+
 
 
 

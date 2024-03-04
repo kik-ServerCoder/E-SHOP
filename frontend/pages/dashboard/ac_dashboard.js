@@ -11,10 +11,10 @@ const ac_dashboard = () => {
   }})
   
   return (
-    <div className="flex flex-wrap justify-center ml-40 mr-40">
+    <div className="flex flex-wrap justify-center mt-6 ml-40 mr-40">
    
       <Link href="./product/addproduct">
-        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4 w-72 h-56 flex items-center justify-center hover:bg-blue-200">
+        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4 w-72 h-48 flex items-center justify-center hover:bg-blue-200">
          Add Product
         </div>
       </Link>
@@ -24,7 +24,7 @@ const ac_dashboard = () => {
         </div>
       </Link>
       <Link href="./product/update/editproduct">
-        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4  w-72 h-56 flex items-center justify-center hover:bg-blue-300">
+        <div className=" bg-blue-100 text-2xl text-gray-800 font-bold p-8 m-4  w-72 h-48 flex items-center justify-center hover:bg-blue-300">
           Update Product
         </div>
       </Link>

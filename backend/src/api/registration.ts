@@ -63,7 +63,7 @@ const router = express.Router();
 
       const user = {...accountant, pass:undefined};
 
-      res.status(200).json({ message: 'Welcome Sir '+ accountant.name, identity: token, userdata:user});
+      res.status(200).json({ message: 'Welcome : '+ accountant.name, identity: token, userdata:user});
       
     } catch (error) {
       console.error(error);

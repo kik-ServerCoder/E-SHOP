@@ -148,7 +148,7 @@ const EditsellProduct = () => {
   useEffect(() => {
     if (successMessage) {
       const redirectTimer = setTimeout(() => {
-        router.push("/dashboard/product/sellprice/addsellprice");
+        router.push("/dashboard/ac_dashboard");
       }, 1000); 
 
       return () => clearTimeout(redirectTimer);

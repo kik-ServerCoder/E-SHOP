@@ -25,26 +25,24 @@ const Header = () => {
 
       <nav>
         <ul className="flex space-x-4">
-          <li>
-            <Link href="/">
-              <b>Home</b>
-            </Link>
-          </li>
-          <li>
-            <Link href="/about">
-              <b>About</b>
-            </Link>
-          </li>
-          <li>
-            <Link href="/contactus">
-              <b>Contact us</b>
-            </Link>
-          </li>
+         
+         
+         
           <li>
             <div>
-{isLoggedIn?(<Link href="/dashboard/ac_dashboard">
-              <b>Dashboard</b>
-            </Link>):( <span className="mr-2">
+{isLoggedIn?(<> 
+        
+          <Link href="/dashboard/ac_dashboard" className= "text-gray-200 hover:text-gray-400 font-semibold mr-4 cursor-pointer">
+          <b>Dashboard </b>
+    
+      </Link>
+
+      <Link href="/report" className="text-gray-200 hover:text-gray-400 font-semibold mr-4 cursor-pointer">
+        
+          <b>Report</b>
+        
+      </Link></>
+        ):( <span className="mr-2">
              
              </span>)}
             </div>

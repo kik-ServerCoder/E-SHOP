@@ -91,10 +91,6 @@ const ProductDetails = ({ productdelId }) => {
                 <td className="py-2 px-4">{product.prod_name}</td>
               </tr>
               <tr className="border-b">
-                <td className="py-2 px-4 font-medium text-gray-700">Product Price</td>
-                <td className="py-2 px-4">{product.prod_price}</td>
-              </tr>
-              <tr className="border-b">
                 <td className="py-2 px-4 font-medium text-gray-700">Product Unit</td>
                 <td className="py-2 px-4">{product.prod_sku}</td>
               </tr>
@@ -114,13 +110,10 @@ const ProductDetails = ({ productdelId }) => {
                 <td className="py-2 px-4 font-medium text-gray-700">Product Total Buy Price</td>
                 <td className="py-2 px-4">{product.prod_totalBP}</td>
               </tr>
+              
               <tr className="border-b">
-                <td className="py-2 px-4 font-medium text-gray-700">Product Total</td>
-                <td className="py-2 px-4">{product.prod_totalPrice}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-2 px-4 font-medium text-gray-700">Accountant ID</td>
-                <td className="py-2 px-4">{product.accountantId}</td>
+                <td className="py-2 px-4 font-medium text-gray-700">Accountant Username</td>
+                <td className="py-2 px-4">{product.username}</td>
               </tr>
             </tbody>
           </table>
