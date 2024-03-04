@@ -28,6 +28,7 @@ const Report = () => {
         switch (selectedTimeRange) {
           case '1hour':
             startTime = new Date(currentTime - 60 * 60 * 1000); 
+           
             break;
           case '12hours':
             startTime = new Date(currentTime - 12 * 60 * 60 * 1000); 
@@ -63,15 +64,13 @@ const Report = () => {
             startTime = new Date(0); 
             break;
         }
-
-        const productResponse = await axios.get('http://localhost:3000/product/getallproductlists/', {
+        const startTimeISOString = startTime.toISOString();
+        console.log(startTimeISOString)
+        const productResponse = await axios.get(`http://localhost:3000/product/getallproductlists?startTime=${startTimeISOString}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
-            params: {
-              startTime: startTime.toISOString(),
-            },
           },
-        }, );
+        });
        
 
         setProduct(Array.isArray(productResponse.data) ? productResponse.data : [productResponse.data]);
