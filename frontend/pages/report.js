@@ -65,7 +65,7 @@ const Report = () => {
             break;
         }
         const startTimeISOString = startTime.toISOString();
-        console.log(startTimeISOString)
+       
         const productResponse = await axios.get(`http://localhost:3000/product/getallproductlists?startTime=${startTimeISOString}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -75,7 +75,7 @@ const Report = () => {
 
         setProduct(Array.isArray(productResponse.data) ? productResponse.data : [productResponse.data]);
 
-        const buyPriceTrackingResponse = await axios.get('http://localhost:3000/product/getbuytracking', {
+        const buyPriceTrackingResponse = await axios.get(`http://localhost:3000/product/getbuytracking?startTime=${startTimeISOString}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -83,7 +83,7 @@ const Report = () => {
 
         setBuyPriceTracking(Array.isArray(buyPriceTrackingResponse.data) ? buyPriceTrackingResponse.data : [buyPriceTrackingResponse.data]);
 
-        const sellPriceTrackingResponse = await axios.get('http://localhost:3000/product/getselltracking', {
+        const sellPriceTrackingResponse = await axios.get(`http://localhost:3000/product/getselltracking?startTime=${startTimeISOString}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

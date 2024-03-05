@@ -79,8 +79,6 @@ router.get('/getallproductlists', verifyToken, checkBlacklist, async (req: Custo
   }
 });
 
-
-
 router.get('/getproduct/:id', verifyToken, checkBlacklist, async (req: CustomRequest, res: Response) => {
   try {
    
