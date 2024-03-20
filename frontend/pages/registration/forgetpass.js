@@ -41,7 +41,7 @@ const ForgotPassword = () => {
         <p className="mt-4 text-green-500">{message}</p>
         {resetToken && (
           <div className="mt-4">
-            <p className="font-semibold">Reset Token make sure to save it:</p>
+            <p className="font-semibold">Reset Token make sure to save it to change passsword:</p>
             <code className="bg-gray-200 p-2 rounded">{resetToken}</code>
           </div>
         )}
